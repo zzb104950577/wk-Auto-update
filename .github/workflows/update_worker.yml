@@ -1,4 +1,4 @@
-name: Auto Update _worker.js and Deploy to Cloudflare
+name: Auto Update _worker.js
 
 on:
   schedule:
@@ -57,7 +57,7 @@ jobs:
 
       - name: 创建 GitHub Issue 通知
         if: env.need_update == 'true'
-        uses: peter-evans/create-issue@v5
+        uses: peter-evans/create-issue@v4
         with:
           title: "✅ 已同步并部署版本：${{ env.latest_tag }}"
           body: |
