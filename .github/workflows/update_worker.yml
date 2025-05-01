@@ -1,25 +1,25 @@
-name: Auto Update _worker.js with Issue Notification
+name: Auto Update _worker.js
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # 每天 00:00 UTC 自动运行
-  workflow_dispatch:        # 支持手动触发
+    - cron: '0 0 * * *'   # 每天00:00 UTC执行
+  workflow_dispatch:
 
 jobs:
   update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
-      - name: 📦 Checkout 仓库
+      - name: Checkout 仓库
         uses: actions/checkout@v4
 
-      - name: 🔍 获取最新 release 信息
+      - name: 获取最新 release 信息
         id: get_release
         run: |
           latest_tag=$(curl -s https://api.github.com/repos/bia-pain-bache/BPB-Worker-Panel/releases/latest | jq -r '.tag_name')
           echo "latest_tag=$latest_tag" >> $GITHUB_ENV
 
-      - name: 📄 检查本地 version.txt
+      - name: 检查本地 version.txt
         id: check_version
         run: |
           if [ -f "version.txt" ]; then
@@ -29,7 +29,7 @@ jobs:
           fi
           echo "current_version=$current_version" >> $GITHUB_ENV
 
-      - name: ✅ 判断是否需要更新
+      - name: 判断是否需要更新
         id: need_update
         run: |
           if [ "$current_version" = "$latest_tag" ]; then
@@ -38,13 +38,13 @@ jobs:
             echo "need_update=true" >> $GITHUB_ENV
           fi
 
-      - name: ⬇️ 下载并替换 _worker.js
+      - name: 下载并替换 _worker.js
         if: env.need_update == 'true'
         run: |
           curl -L -o _worker.js "https://github.com/bia-pain-bache/BPB-Worker-Panel/releases/download/${{ env.latest_tag }}/worker.js"
           echo "${{ env.latest_tag }}" > version.txt
 
-      - name: 📤 提交更新到 GitHub
+      - name: 提交更新到 GitHub
         if: env.need_update == 'true'
         run: |
           git config user.name "github-actions[bot]"
@@ -53,21 +53,14 @@ jobs:
           git commit -m "Update _worker.js to version ${{ env.latest_tag }}"
           git push
 
-      - name: 📝 创建同步提醒 Issue
+      - name: 创建 GitHub Issue 通知
         if: env.need_update == 'true'
-        uses: peter-evans/create-issue@v4
+        uses: peter-evans/create-issue@v4.1.0
         with:
           title: "✅ 同步成功：_worker.js 已更新至 ${{ env.latest_tag }}"
           body: |
             本次已成功同步上游版本 **${{ env.latest_tag }}**。
 
-            👉 请手动执行以下命令，将最新 _worker.js 发布到 Cloudflare：
-
-            ```bash
-            wrangler publish
-            ```
-
-            ---
+          
             此任务由 GitHub Actions 自动完成 🧠  
-            如有问题欢迎反馈~
           labels: auto-update, cf-deploy-pending
