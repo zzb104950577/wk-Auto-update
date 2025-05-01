@@ -1,8 +1,8 @@
-name: Auto Update _worker.js
+name: Auto Update _worker.js with Issue Notification
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # 每天00:00 UTC执行
+    - cron: '0 0 * * *'   # 每天00:00 UTC 执行一次
   workflow_dispatch:
 
 jobs:
@@ -55,12 +55,13 @@ jobs:
 
       - name: 创建 GitHub Issue 通知
         if: env.need_update == 'true'
-        uses: peter-evans/create-issue@v4.1.0
+        uses: peter-evans/create-issue@v4.0.0
         with:
           title: "✅ 同步成功：_worker.js 已更新至 ${{ env.latest_tag }}"
           body: |
             本次已成功同步上游版本 **${{ env.latest_tag }}**。
 
           
+            ---
             此任务由 GitHub Actions 自动完成 🧠  
           labels: auto-update, cf-deploy-pending
