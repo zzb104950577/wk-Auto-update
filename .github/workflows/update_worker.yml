@@ -2,7 +2,7 @@ name: Auto Update _worker.js
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # 每天00:00 UTC运行
+    - cron: '0 0 * * *'   # 每天00:00 UTC执行
   workflow_dispatch:
 
 jobs:
@@ -53,18 +53,15 @@ jobs:
           git commit -m "Update _worker.js to version ${{ env.latest_tag }}"
           git push
 
-     
-
       - name: 创建 GitHub Issue 通知
         if: env.need_update == 'true'
         uses: peter-evans/create-issue@v4
         with:
-          title: "✅ 已同步并部署版本：${{ env.latest_tag }}"
+          title: "✅ 同步成功：_worker.js 已更新至 ${{ env.latest_tag }}"
           body: |
-            `_worker.js` 已成功同步上游版本 **${{ env.latest_tag }}** 并自动部署至 Cloudflare Workers 🎉
+            本次已成功同步上游版本 **${{ env.latest_tag }}**。
 
-
-            ✅ 项目已自动更新完成。
-          labels: |
-            发布提醒
-            auto-update
+         
+            此任务由 GitHub Actions 自动完成 🧠  
+            如有问题欢迎反馈~
+          labels: auto-update, cf-deploy-pending
