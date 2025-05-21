@@ -1,5 +1,5 @@
 
-自动同步 BPB-Worker-Panel 项目的最新 worker.js 文件。
+
 
 ## 🚀 快速开始（适合 Fork）
 
