@@ -19,7 +19,7 @@
 
 * 每天自动检查 bia-pain-bache/BPB-Worker-Panel 仓库的最新 Release
 
-* **支持选择更新正式版或预发布版本：通过手动触发或 `update_type.txt` 文件配置。**
+* **支持选择更新正式版或预发布版本：通过手动触发或 `update_type.txt` 文件配置 1是正式版 0是测试版本。**
 
 * 自动下载最新版本的 worker.js
 
