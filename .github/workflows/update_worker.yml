@@ -78,7 +78,7 @@ jobs:
             echo "最新预发布版本: $latest_tag" # 最新预发布版本
           else
             # 默认或选择正式发布版本，获取最新正式发布版本 (GitHub API 的 /latest 默认返回非预发布版本)
-            latest_tag=$(curl -s https://api.com/repos/bia-pain-bache/BPB-Worker-Panel/releases/latest | jq -r '.tag_name')
+            latest_tag=$(curl -s https://api.github.com/repos/bia-pain-bache/BPB-Worker-Panel/releases/latest | jq -r '.tag_name')
             if [ -z "$latest_tag" ]; then
               echo "未找到任何正式发布版本。" # 未找到任何正式发布版本。
               exit 1
